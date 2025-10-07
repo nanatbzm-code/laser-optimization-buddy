@@ -10,10 +10,11 @@ interface TestCasesProps {
 
 const TestCases = ({ onLoadTestCase }: TestCasesProps) => {
   return (
-    <Card className="shadow-lg border-border/50">
-      <CardHeader className="bg-gradient-secondary">
-        <div className="flex items-center gap-3">
-          <Beaker className="h-6 w-6 text-primary" />
+    <Card className="shadow-glow border-primary/20">
+      <CardHeader className="bg-gradient-secondary relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+        <div className="flex items-center gap-3 relative z-10">
+          <Beaker className="h-6 w-6 text-primary animate-float" />
           <div>
             <CardTitle className="text-xl">نمونه‌های تست</CardTitle>
             <CardDescription className="mt-1">
@@ -25,7 +26,7 @@ const TestCases = ({ onLoadTestCase }: TestCasesProps) => {
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {testCases.map((testCase, index) => (
-            <Card key={index} className="border-2 border-border/50 hover:border-primary/50 transition-colors">
+            <Card key={index} className="border-2 border-primary/20 hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:scale-105">
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-start justify-between">
                   <Badge variant="outline" className="text-xs">
@@ -61,7 +62,7 @@ const TestCases = ({ onLoadTestCase }: TestCasesProps) => {
 
                 <Button
                   onClick={() => onLoadTestCase(testCase)}
-                  className="w-full bg-primary hover:bg-primary/90"
+                  className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300 shine-effect"
                   size="sm"
                 >
                   <Play className="mr-2 h-4 w-4" />

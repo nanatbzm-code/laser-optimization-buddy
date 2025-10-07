@@ -66,13 +66,14 @@ const LaserCalculator = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="shadow-lg border-border/50">
-        <CardHeader className="bg-gradient-primary text-primary-foreground">
-          <div className="flex items-center gap-3">
-            <Calculator className="h-6 w-6" />
+      <Card className="shadow-glow border-primary/20 hover:shadow-glow-accent transition-all duration-300">
+        <CardHeader className="bg-gradient-primary text-primary-foreground relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+          <div className="flex items-center gap-3 relative z-10">
+            <Calculator className="h-6 w-6 animate-float" />
             <div>
-              <CardTitle className="text-2xl">محاسبه‌گر پارامترهای لیزر</CardTitle>
-              <CardDescription className="text-primary-foreground/80 mt-1">
+              <CardTitle className="text-2xl font-bold">محاسبه‌گر پارامترهای لیزر</CardTitle>
+              <CardDescription className="text-primary-foreground/90 mt-1">
                 ورود مشخصات عملیات و دریافت توصیه‌های بهینه
               </CardDescription>
             </div>
@@ -242,7 +243,7 @@ const LaserCalculator = () => {
             <Button
               onClick={handleCalculate}
               disabled={!isFormValid()}
-              className="flex-1 bg-gradient-primary hover:opacity-90 transition-opacity"
+              className="flex-1 bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg font-medium shine-effect"
               size="lg"
             >
               <Zap className="mr-2 h-5 w-5" />

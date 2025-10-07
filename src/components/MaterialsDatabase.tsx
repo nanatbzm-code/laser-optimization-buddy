@@ -24,11 +24,12 @@ const MaterialsDatabase = () => {
   );
 
   return (
-    <Card className="shadow-lg border-border/50">
-      <CardHeader className="bg-gradient-secondary">
-        <div className="flex items-center justify-between">
+    <Card className="shadow-glow border-primary/20">
+      <CardHeader className="bg-gradient-secondary relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent"></div>
+        <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-3">
-            <Database className="h-6 w-6 text-primary" />
+            <Database className="h-6 w-6 text-primary animate-float" />
             <div>
               <CardTitle className="text-xl">پایگاه داده مواد</CardTitle>
               <CardDescription className="mt-1">

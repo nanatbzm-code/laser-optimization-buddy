@@ -29,19 +29,20 @@ const ResultsDisplay = ({ results, inputs }: ResultsDisplayProps) => {
   const pulseDiff = ((results.recommendedPulseRate - inputs.pulseRate) / inputs.pulseRate) * 100;
 
   return (
-    <div className="space-y-6 animate-in fade-in-50 duration-500">
+    <div className="space-y-6 animate-fade-in">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="shadow-md border-border/50">
+        <Card className="shadow-md border-primary/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Zap className="h-4 w-4" />
+              <Zap className="h-4 w-4 text-primary" />
               توان پیشنهادی
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-foreground">
+          <CardContent className="relative">
+            <div className="absolute inset-0 bg-gradient-primary opacity-5 rounded-lg"></div>
+            <div className="space-y-2 relative z-10">
+              <div className="text-3xl font-bold gradient-text">
                 {results.recommendedPower}
                 <span className="text-lg text-muted-foreground ml-1">W</span>
               </div>
@@ -58,16 +59,17 @@ const ResultsDisplay = ({ results, inputs }: ResultsDisplayProps) => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-md border-border/50">
+        <Card className="shadow-md border-accent/20 hover:shadow-glow-accent transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Activity className="h-4 w-4" />
+              <Activity className="h-4 w-4 text-accent" />
               نرخ پالس پیشنهادی
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-foreground">
+          <CardContent className="relative">
+            <div className="absolute inset-0 bg-gradient-accent opacity-5 rounded-lg"></div>
+            <div className="space-y-2 relative z-10">
+              <div className="text-3xl font-bold gradient-text">
                 {results.recommendedPulseRate.toLocaleString()}
                 <span className="text-lg text-muted-foreground ml-1">Hz</span>
               </div>
@@ -84,7 +86,7 @@ const ResultsDisplay = ({ results, inputs }: ResultsDisplayProps) => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-md border-border/50">
+        <Card className="shadow-md border-success/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Clock className="h-4 w-4" />
