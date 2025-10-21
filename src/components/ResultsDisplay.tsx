@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle2, Activity, Clock, Zap, Target } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Activity, Clock, Zap, Target, Gauge, Maximize2 } from "lucide-react";
 import { LaserCalculationResult } from "@/utils/laserCalculations";
 import { LaserInputParams } from "@/utils/laserCalculations";
 import { Progress } from "@/components/ui/progress";
@@ -30,7 +30,81 @@ const ResultsDisplay = ({ results, inputs }: ResultsDisplayProps) => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Summary Cards */}
+      {/* Primary Output Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="shadow-md border-accent/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Target className="h-4 w-4 text-accent" />
+              نوع لیزر
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative">
+            <div className="absolute inset-0 bg-gradient-accent opacity-5 rounded-lg"></div>
+            <div className="space-y-2 relative z-10">
+              <div className="text-2xl font-bold text-foreground">
+                {results.laserType}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md border-primary/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" />
+              توان لیزر
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative">
+            <div className="absolute inset-0 bg-gradient-primary opacity-5 rounded-lg"></div>
+            <div className="space-y-2 relative z-10">
+              <div className="text-3xl font-bold gradient-text">
+                {results.laserPower}
+                <span className="text-lg text-muted-foreground ml-1">W</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md border-success/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Gauge className="h-4 w-4 text-success" />
+              حداکثر نرخ پیشروی
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative">
+            <div className="absolute inset-0 bg-gradient-accent opacity-5 rounded-lg"></div>
+            <div className="space-y-2 relative z-10">
+              <div className="text-3xl font-bold gradient-text">
+                {results.maxFeedRate}
+                <span className="text-lg text-muted-foreground ml-1">mm/min</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md border-warning/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Maximize2 className="h-4 w-4 text-warning" />
+              عرض بیم لیزر
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative">
+            <div className="absolute inset-0 bg-gradient-card opacity-5 rounded-lg"></div>
+            <div className="space-y-2 relative z-10">
+              <div className="text-3xl font-bold gradient-text">
+                {results.beamWidth}
+                <span className="text-lg text-muted-foreground ml-1">mm</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Secondary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="shadow-md border-primary/20 hover:shadow-glow transition-all duration-300 hover:scale-105">
           <CardHeader className="pb-3">

@@ -21,6 +21,10 @@ export interface LaserCalculationResult {
   penetrationEstimate: string;
   warnings: string[];
   matchedMaterial?: MaterialData;
+  laserType: string;
+  laserPower: number;
+  maxFeedRate: number;
+  beamWidth: number;
 }
 
 export function calculateLaserParameters(
@@ -134,6 +138,35 @@ export function calculateLaserParameters(
     warnings.push("زمان عملیات بیش از 1 ساعت - توصیه به تقسیم کار");
   }
 
+  // Calculate beam width based on laser type and power
+  let beamWidth = 0.1; // Default 0.1mm
+  if (input.laserType === "لیزر فایبر") {
+    beamWidth = 0.05 + (recommendedPower / 10000); // Fiber lasers: 0.05-0.3mm
+  } else if (input.laserType === "CO₂ لیزر") {
+    beamWidth = 0.1 + (recommendedPower / 5000); // CO2 lasers: 0.1-0.5mm
+  } else if (input.laserType === "لیزر Nd:YAG") {
+    beamWidth = 0.08 + (recommendedPower / 8000); // Nd:YAG lasers: 0.08-0.4mm
+  }
+  beamWidth = Math.min(beamWidth, 0.5); // Cap at 0.5mm
+
+  // Calculate maximum feed rate based on material, thickness, and power
+  let maxFeedRate = input.speed;
+  if (matchedMaterial) {
+    // Base feed rate on material thermal properties and laser power
+    const powerRatio = recommendedPower / ((matchedMaterial.powerMin + matchedMaterial.powerMax) / 2);
+    const thicknessFactor = 1 / (input.thickness * 0.5 + 0.5);
+    
+    if (input.process === "برشکاری") {
+      maxFeedRate = Math.round(500 * powerRatio * thicknessFactor);
+    } else if (input.process === "حکاکی") {
+      maxFeedRate = Math.round(1000 * powerRatio);
+    } else if (input.process === "جوشکاری") {
+      maxFeedRate = Math.round(300 * powerRatio * thicknessFactor);
+    }
+    
+    maxFeedRate = Math.max(100, Math.min(maxFeedRate, 3000)); // Between 100-3000 mm/min
+  }
+
   return {
     recommendedPower: Math.round(recommendedPower),
     recommendedPulseRate: Math.round(recommendedPulseRate),
@@ -143,6 +176,10 @@ export function calculateLaserParameters(
     penetrationEstimate,
     warnings,
     matchedMaterial,
+    laserType: input.laserType,
+    laserPower: Math.round(recommendedPower),
+    maxFeedRate: Math.round(maxFeedRate),
+    beamWidth: Math.round(beamWidth * 1000) / 1000,
   };
 }
 
