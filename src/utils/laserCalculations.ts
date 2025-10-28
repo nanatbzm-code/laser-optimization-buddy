@@ -4,93 +4,125 @@ export interface LaserInputParams {
   material: string;
   thickness: number;
   process: string;
+  priority: string; // اولویت کاربر: "سرعت بالا"، "کیفیت بالا"، "هزینه کم"، "دقت بالا"
 }
 
-export interface LaserCalculationResult {
+export interface LaserMethod {
+  rank: number;
+  method: string;
   laserType: string;
   laserPower: number;
-  maxFeedRate: number;
-  beamWidth: number;
+  pulseTime: string;
+  pulseRate?: string;
+  feedRate: number;
+  accuracy?: string;
+  costLevel: number;
+  equipment: string;
+  source?: string;
+  recommendedFor: string;
 }
+
+export type LaserCalculationResult = LaserMethod[];
 
 export function calculateLaserParameters(
   input: LaserInputParams,
   materialsDb: MaterialData[]
 ): LaserCalculationResult {
-  // Find exact or closest matching material
-  let matchedMaterial = materialsDb.find(
+  // Find all matching materials for the given inputs
+  let matchedMaterials = materialsDb.filter(
     m => m.material.toLowerCase() === input.material.toLowerCase() &&
          m.process.toLowerCase() === input.process.toLowerCase() &&
          input.thickness >= m.thicknessMin &&
          input.thickness <= m.thicknessMax
   );
 
-  // If no exact match, find closest by material and process
-  if (!matchedMaterial) {
+  // If no exact match, try to find by material and process only
+  if (matchedMaterials.length === 0) {
     const sameProcess = materialsDb.filter(
       m => m.process.toLowerCase() === input.process.toLowerCase()
     );
     
-    matchedMaterial = sameProcess.find(
+    matchedMaterials = sameProcess.filter(
       m => m.material.toLowerCase().includes(input.material.toLowerCase()) ||
            input.material.toLowerCase().includes(m.material.toLowerCase())
     );
 
-    // If still no match, use first material with same process
-    if (!matchedMaterial && sameProcess.length > 0) {
-      matchedMaterial = sameProcess[0];
-    }
-
-    // Last resort: use first material in database
-    if (!matchedMaterial && materialsDb.length > 0) {
-      matchedMaterial = materialsDb[0];
+    // If still no match, use first materials with same process
+    if (matchedMaterials.length === 0 && sameProcess.length > 0) {
+      matchedMaterials = sameProcess.slice(0, 3);
     }
   }
 
-  if (!matchedMaterial) {
+  // If no materials found, return empty array
+  if (matchedMaterials.length === 0) {
+    return [];
+  }
+
+  // Convert to LaserMethod format
+  const methods: LaserMethod[] = matchedMaterials.map(m => {
+    const laserPower = Math.round((m.powerMin + m.powerMax) / 2);
+    const feedRate = m.speed || 100;
+
     return {
-      laserType: "Fiber Laser",
-      laserPower: 1000,
-      maxFeedRate: 50,
-      beamWidth: 0.1
+      rank: m.rank,
+      method: m.method,
+      laserType: m.laserType,
+      laserPower,
+      pulseTime: m.pulseTime,
+      pulseRate: m.pulseRate,
+      feedRate,
+      accuracy: m.accuracy,
+      costLevel: m.costLevel,
+      equipment: m.equipment,
+      source: m.source,
+      recommendedFor: m.recommendedFor
     };
-  }
+  });
 
-  // Calculate laser power (average of min and max)
-  const laserPower = (matchedMaterial.powerMin + matchedMaterial.powerMax) / 2;
-
-  // Calculate beam width based on laser type and power
-  let beamWidth = 0.1; // default mm
-  if (matchedMaterial.laserType.includes("CO2")) {
-    beamWidth = 0.15 + (laserPower / 10000);
-  } else if (matchedMaterial.laserType.includes("Fiber")) {
-    beamWidth = 0.05 + (laserPower / 15000);
-  } else if (matchedMaterial.laserType.includes("Nd:YAG")) {
-    beamWidth = 0.08 + (laserPower / 12000);
-  }
-
-  // Calculate max feed rate
-  let maxFeedRate = matchedMaterial.speed || 50;
+  // Sort based on priority
+  let sortedMethods = [...methods];
   
-  // Adjust based on thickness
-  if (input.thickness > 5) {
-    maxFeedRate *= 0.7;
-  } else if (input.thickness > 10) {
-    maxFeedRate *= 0.5;
+  switch (input.priority) {
+    case "سرعت بالا":
+      sortedMethods.sort((a, b) => {
+        const materialA = matchedMaterials.find(m => m.method === a.method);
+        const materialB = matchedMaterials.find(m => m.method === b.method);
+        return (materialB?.speedScore || 0) - (materialA?.speedScore || 0);
+      });
+      break;
+    
+    case "دقت بالا":
+      sortedMethods.sort((a, b) => {
+        const materialA = matchedMaterials.find(m => m.method === a.method);
+        const materialB = matchedMaterials.find(m => m.method === b.method);
+        return (materialB?.accuracyScore || 0) - (materialA?.accuracyScore || 0);
+      });
+      break;
+    
+    case "کیفیت بالا":
+      sortedMethods.sort((a, b) => {
+        const materialA = matchedMaterials.find(m => m.method === a.method);
+        const materialB = matchedMaterials.find(m => m.method === b.method);
+        return (materialB?.qualityScore || 0) - (materialA?.qualityScore || 0);
+      });
+      break;
+    
+    case "هزینه کم":
+      sortedMethods.sort((a, b) => a.costLevel - b.costLevel);
+      break;
+    
+    default:
+      // Keep original rank order
+      sortedMethods.sort((a, b) => a.rank - b.rank);
   }
 
-  // Adjust based on process
-  if (input.process.toLowerCase().includes("برش") || input.process.toLowerCase().includes("cutting")) {
-    maxFeedRate *= 1.2;
-  } else if (input.process.toLowerCase().includes("جوش") || input.process.toLowerCase().includes("welding")) {
-    maxFeedRate *= 0.8;
-  }
+  // Update ranks based on new order
+  sortedMethods = sortedMethods.map((method, index) => ({
+    ...method,
+    rank: index + 1
+  }));
 
-  return {
-    laserType: matchedMaterial.laserType,
-    laserPower: Math.round(laserPower),
-    maxFeedRate: Math.round(maxFeedRate * 10) / 10,
-    beamWidth: Math.round(beamWidth * 1000) / 1000
-  };
+  // Return top 5 methods
+  return sortedMethods.slice(0, 5);
 }
 

@@ -4,16 +4,119 @@ export interface MaterialData {
   material: string;
   thicknessMin: number;
   thicknessMax: number;
+  method: string; // نام روش (مثلاً "فمتوثانیه"، "UV نانوپالس")
+  rank: number; // رتبه روش (1 = بهترین)
   laserType: string;
   powerMin: number;
   powerMax: number;
   pulseTime: string;
+  pulseRate?: string; // نرخ پالس (مثلاً "300-800 kHz")
   equipment: string;
   speed?: number;
+  accuracy?: string; // دقت (مثلاً "±5 µm")
+  costLevel: number; // سطح هزینه (1-4 ستاره)
+  speedScore: number; // امتیاز سرعت (0-100)
+  accuracyScore: number; // امتیاز دقت (0-100)
+  qualityScore: number; // امتیاز کیفیت (0-100)
+  recommendedFor: string; // اولویت پیشنهادی
+  source?: string; // منبع اطلاعات
   focusZone?: number;
 }
 
 export const materialsDatabase: MaterialData[] = [
+  // Cutting - Glass (Multiple methods)
+  {
+    process: "برش",
+    category: "غیر فلزی",
+    material: "شیشه",
+    thicknessMin: 0.5,
+    thicknessMax: 2,
+    method: "فمتوثانیه",
+    rank: 1,
+    laserType: "فمتوثانیه 1030 nm",
+    powerMin: 15,
+    powerMax: 30,
+    pulseTime: "300-500 فمتو ثانیه",
+    pulseRate: "300-800 kHz",
+    equipment: "Spectra-Physics Spirit",
+    speed: 225,
+    accuracy: "±5 µm",
+    costLevel: 4,
+    speedScore: 40,
+    accuracyScore: 95,
+    qualityScore: 95,
+    recommendedFor: "دقت بالا",
+    source: "Frontiers in Physics, 2023"
+  },
+  {
+    process: "برش",
+    category: "غیر فلزی",
+    material: "شیشه",
+    thicknessMin: 0.5,
+    thicknessMax: 2,
+    method: "UV نانوپالس",
+    rank: 2,
+    laserType: "لیزر UV 355 nm",
+    powerMin: 20,
+    powerMax: 40,
+    pulseTime: "20-80 نانو ثانیه",
+    pulseRate: "80-200 kHz",
+    equipment: "Coherent AVIA",
+    speed: 300,
+    accuracy: "±15 µm",
+    costLevel: 2,
+    speedScore: 70,
+    accuracyScore: 80,
+    qualityScore: 85,
+    recommendedFor: "تعادل",
+    source: "Opt. Lasers Eng."
+  },
+  {
+    process: "برش",
+    category: "غیر فلزی",
+    material: "شیشه",
+    thicknessMin: 0.5,
+    thicknessMax: 2,
+    method: "CO₂ + آب‌جت",
+    rank: 3,
+    laserType: "CO₂ 10.6 µm",
+    powerMin: 50,
+    powerMax: 100,
+    pulseTime: "CW",
+    equipment: "Epilog Fusion Pro",
+    speed: 750,
+    accuracy: "±50 µm",
+    costLevel: 1,
+    speedScore: 90,
+    accuracyScore: 50,
+    qualityScore: 60,
+    recommendedFor: "هزینه کم",
+    source: "Industrial Laser Solutions"
+  },
+  {
+    process: "برش",
+    category: "غیر فلزی",
+    material: "شیشه",
+    thicknessMin: 0.5,
+    thicknessMax: 2,
+    method: "فایبر + گاز کمکی",
+    rank: 4,
+    laserType: "فایبر 1064 nm",
+    powerMin: 500,
+    powerMax: 1000,
+    pulseTime: "1-5 میکرو ثانیه",
+    pulseRate: "20-50 kHz",
+    equipment: "Trumpf TruLaser",
+    speed: 1150,
+    accuracy: "±100 µm",
+    costLevel: 2,
+    speedScore: 95,
+    accuracyScore: 40,
+    qualityScore: 55,
+    recommendedFor: "سرعت بالا",
+    source: "با پوشش IR"
+  },
+
   // Engraving - Metals
   {
     process: "حکاکی",
@@ -21,11 +124,42 @@ export const materialsDatabase: MaterialData[] = [
     material: "فولاد کربنی",
     thicknessMin: 0.1,
     thicknessMax: 2,
-    laserType: "لیزر فایبر",
+    method: "فایبر MOPA",
+    rank: 1,
+    laserType: "لیزر فایبر MOPA",
     powerMin: 20,
     powerMax: 100,
     pulseTime: "20-200 نانو ثانیه",
-    equipment: "MOPA، JPT"
+    pulseRate: "20-80 kHz",
+    equipment: "JPT MOPA",
+    speed: 300,
+    accuracy: "±10 µm",
+    costLevel: 3,
+    speedScore: 85,
+    accuracyScore: 90,
+    qualityScore: 92,
+    recommendedFor: "کیفیت بالا"
+  },
+  {
+    process: "حکاکی",
+    category: "فلزی",
+    material: "فولاد کربنی",
+    thicknessMin: 0.1,
+    thicknessMax: 2,
+    method: "فایبر استاندارد",
+    rank: 2,
+    laserType: "لیزر فایبر",
+    powerMin: 20,
+    powerMax: 100,
+    pulseTime: "50-200 نانو ثانیه",
+    equipment: "Raycus، IPG",
+    speed: 250,
+    accuracy: "±20 µm",
+    costLevel: 2,
+    speedScore: 75,
+    accuracyScore: 75,
+    qualityScore: 78,
+    recommendedFor: "تعادل"
   },
   {
     process: "حکاکی",
@@ -33,11 +167,21 @@ export const materialsDatabase: MaterialData[] = [
     material: "فولاد ضد زنگ",
     thicknessMin: 0.1,
     thicknessMax: 2,
-    laserType: "لیزر فایبر",
+    method: "فایبر MOPA",
+    rank: 1,
+    laserType: "لیزر فایبر MOPA",
     powerMin: 20,
     powerMax: 100,
     pulseTime: "20-200 نانو ثانیه",
-    equipment: "RMI، Maxphotonics"
+    pulseRate: "20-100 kHz",
+    equipment: "RMI، Maxphotonics",
+    speed: 320,
+    accuracy: "±8 µm",
+    costLevel: 3,
+    speedScore: 88,
+    accuracyScore: 92,
+    qualityScore: 94,
+    recommendedFor: "کیفیت بالا"
   },
   {
     process: "حکاکی",
@@ -45,36 +189,23 @@ export const materialsDatabase: MaterialData[] = [
     material: "آلومینیوم",
     thicknessMin: 0.1,
     thicknessMax: 2,
-    laserType: "لیزر فایبر",
+    method: "فایبر MOPA",
+    rank: 1,
+    laserType: "لیزر فایبر MOPA",
     powerMin: 20,
     powerMax: 100,
     pulseTime: "100-250 نانو ثانیه",
-    equipment: "RMI، Maxphotonics"
+    pulseRate: "20-80 kHz",
+    equipment: "RMI، Maxphotonics",
+    speed: 280,
+    accuracy: "±12 µm",
+    costLevel: 3,
+    speedScore: 82,
+    accuracyScore: 88,
+    qualityScore: 90,
+    recommendedFor: "کیفیت بالا"
   },
-  {
-    process: "حکاکی",
-    category: "فلزی",
-    material: "مس",
-    thicknessMin: 0.1,
-    thicknessMax: 2,
-    laserType: "لیزر فایبر",
-    powerMin: 20,
-    powerMax: 100,
-    pulseTime: "200-500 نانو ثانیه",
-    equipment: "RMI، Maxphotonics"
-  },
-  {
-    process: "حکاکی",
-    category: "فلزی",
-    material: "برنج",
-    thicknessMin: 0.1,
-    thicknessMax: 2,
-    laserType: "لیزر فایبر",
-    powerMin: 20,
-    powerMax: 100,
-    pulseTime: "100-400 نانو ثانیه",
-    equipment: "RMI، Maxphotonics"
-  },
+
   // Engraving - Non-metals
   {
     process: "حکاکی",
@@ -82,11 +213,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "پلاکسی گلس",
     thicknessMin: 0.1,
     thicknessMax: 5,
-    laserType: "CO₂ لیزر",
+    method: "CO₂ RF",
+    rank: 1,
+    laserType: "CO₂ لیزر RF",
     powerMin: 10,
     powerMax: 50,
     pulseTime: "10.6 میکرو ثانیه",
-    equipment: "Epilog، Trotec"
+    equipment: "Epilog، Trotec",
+    speed: 400,
+    accuracy: "±30 µm",
+    costLevel: 2,
+    speedScore: 90,
+    accuracyScore: 85,
+    qualityScore: 88,
+    recommendedFor: "تعادل"
   },
   {
     process: "حکاکی",
@@ -94,24 +234,22 @@ export const materialsDatabase: MaterialData[] = [
     material: "چوب",
     thicknessMin: 0.1,
     thicknessMax: 10,
+    method: "CO₂",
+    rank: 1,
     laserType: "CO₂ لیزر",
     powerMin: 10,
     powerMax: 100,
     pulseTime: "10.6 میکرو ثانیه",
-    equipment: "Universal، Boss Laser"
+    equipment: "Universal، Boss Laser",
+    speed: 500,
+    accuracy: "±50 µm",
+    costLevel: 1,
+    speedScore: 92,
+    accuracyScore: 70,
+    qualityScore: 75,
+    recommendedFor: "هزینه کم"
   },
-  {
-    process: "حکاکی",
-    category: "غیر فلزی",
-    material: "چرم",
-    thicknessMin: 0.5,
-    thicknessMax: 10,
-    laserType: "CO₂ لیزر",
-    powerMin: 20,
-    powerMax: 100,
-    pulseTime: "10.6 میکرو ثانیه",
-    equipment: "Thunder Laser، Aeon"
-  },
+
   // Cutting - Metals
   {
     process: "برشکاری",
@@ -119,11 +257,42 @@ export const materialsDatabase: MaterialData[] = [
     material: "فولاد کربنی",
     thicknessMin: 0.5,
     thicknessMax: 25,
-    laserType: "لیزر فایبر",
+    method: "فایبر CW",
+    rank: 1,
+    laserType: "لیزر فایبر CW",
     powerMin: 500,
     powerMax: 6000,
+    pulseTime: "پیوسته (CW)",
+    equipment: "IPG، Raycus",
+    speed: 800,
+    accuracy: "±100 µm",
+    costLevel: 3,
+    speedScore: 88,
+    accuracyScore: 75,
+    qualityScore: 85,
+    recommendedFor: "سرعت بالا"
+  },
+  {
+    process: "برشکاری",
+    category: "فلزی",
+    material: "فولاد کربنی",
+    thicknessMin: 0.5,
+    thicknessMax: 25,
+    method: "فایبر پالسی",
+    rank: 2,
+    laserType: "لیزر فایبر پالسی",
+    powerMin: 500,
+    powerMax: 4000,
     pulseTime: "10-100 میکرو ثانیه",
-    equipment: "IPG، Raycus"
+    pulseRate: "1-10 kHz",
+    equipment: "Trumpf، Bystronic",
+    speed: 600,
+    accuracy: "±50 µm",
+    costLevel: 3,
+    speedScore: 70,
+    accuracyScore: 90,
+    qualityScore: 92,
+    recommendedFor: "دقت بالا"
   },
   {
     process: "برشکاری",
@@ -131,11 +300,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "فولاد ضد زنگ",
     thicknessMin: 0.5,
     thicknessMax: 20,
+    method: "فایبر",
+    rank: 1,
     laserType: "لیزر فایبر",
     powerMin: 500,
     powerMax: 4000,
     pulseTime: "10-100 میکرو ثانیه",
-    equipment: "Trumpf، Bystronic"
+    equipment: "Trumpf، Bystronic",
+    speed: 700,
+    accuracy: "±80 µm",
+    costLevel: 3,
+    speedScore: 85,
+    accuracyScore: 82,
+    qualityScore: 88,
+    recommendedFor: "تعادل"
   },
   {
     process: "برشکاری",
@@ -143,24 +321,22 @@ export const materialsDatabase: MaterialData[] = [
     material: "آلومینیوم",
     thicknessMin: 0.5,
     thicknessMax: 15,
+    method: "فایبر با نیتروژن",
+    rank: 1,
     laserType: "لیزر فایبر",
     powerMin: 700,
     powerMax: 4000,
     pulseTime: "10-500 میکرو ثانیه",
-    equipment: "Amada، Mazak"
+    equipment: "Amada، Mazak",
+    speed: 650,
+    accuracy: "±100 µm",
+    costLevel: 3,
+    speedScore: 80,
+    accuracyScore: 75,
+    qualityScore: 82,
+    recommendedFor: "کیفیت بالا"
   },
-  {
-    process: "برشکاری",
-    category: "فلزی",
-    material: "مس",
-    thicknessMin: 0.5,
-    thicknessMax: 10,
-    laserType: "لیزر فایبر",
-    powerMin: 1000,
-    powerMax: 3000,
-    pulseTime: "1-200 نانو ثانیه",
-    equipment: "Bodor، Han's Laser"
-  },
+
   // Cutting - Non-metals
   {
     process: "برشکاری",
@@ -168,11 +344,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "پلاکسی گلس",
     thicknessMin: 1,
     thicknessMax: 20,
+    method: "CO₂",
+    rank: 1,
     laserType: "CO₂ لیزر",
     powerMin: 50,
     powerMax: 200,
     pulseTime: "10-100 میکرو ثانیه",
-    equipment: "Epilog، Trotec"
+    equipment: "Epilog، Trotec",
+    speed: 600,
+    accuracy: "±100 µm",
+    costLevel: 1,
+    speedScore: 88,
+    accuracyScore: 70,
+    qualityScore: 75,
+    recommendedFor: "هزینه کم"
   },
   {
     process: "برشکاری",
@@ -180,12 +365,22 @@ export const materialsDatabase: MaterialData[] = [
     material: "چوب",
     thicknessMin: 1,
     thicknessMax: 30,
+    method: "CO₂",
+    rank: 1,
     laserType: "CO₂ لیزر",
     powerMin: 50,
     powerMax: 300,
     pulseTime: "50-150 میکرو ثانیه",
-    equipment: "Universal، Boss Laser"
+    equipment: "Universal، Boss Laser",
+    speed: 800,
+    accuracy: "±200 µm",
+    costLevel: 1,
+    speedScore: 92,
+    accuracyScore: 60,
+    qualityScore: 65,
+    recommendedFor: "سرعت بالا"
   },
+
   // Welding
   {
     process: "جوشکاری",
@@ -193,12 +388,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "استیل ضد زنگ",
     thicknessMin: 1,
     thicknessMax: 1,
-    laserType: "لیزر فایبر",
+    method: "فایبر پیوسته",
+    rank: 1,
+    laserType: "لیزر فایبر CW",
     powerMin: 260,
     powerMax: 500,
-    pulseTime: "میکرو ثانیه",
+    pulseTime: "پیوسته",
     equipment: "ARTIZONO",
     speed: 800,
+    accuracy: "±150 µm",
+    costLevel: 3,
+    speedScore: 85,
+    accuracyScore: 70,
+    qualityScore: 80,
+    recommendedFor: "سرعت بالا",
     focusZone: 2
   },
   {
@@ -207,12 +410,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "استیل ضد زنگ",
     thicknessMin: 2,
     thicknessMax: 2,
+    method: "فایبر",
+    rank: 1,
     laserType: "لیزر فایبر",
     powerMin: 600,
     powerMax: 1000,
     pulseTime: "میکرو ثانیه",
     equipment: "ARTIZONO",
     speed: 800,
+    accuracy: "±200 µm",
+    costLevel: 3,
+    speedScore: 82,
+    accuracyScore: 68,
+    qualityScore: 78,
+    recommendedFor: "تعادل",
     focusZone: 2
   },
   {
@@ -221,12 +432,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "آلومینیوم",
     thicknessMin: 1,
     thicknessMax: 1,
+    method: "فایبر",
+    rank: 1,
     laserType: "لیزر فایبر",
     powerMin: 480,
     powerMax: 500,
     pulseTime: "میکرو ثانیه",
     equipment: "ARTIZONO",
     speed: 700,
+    accuracy: "±180 µm",
+    costLevel: 3,
+    speedScore: 80,
+    accuracyScore: 65,
+    qualityScore: 75,
+    recommendedFor: "تعادل",
     focusZone: 1
   },
   {
@@ -235,40 +454,20 @@ export const materialsDatabase: MaterialData[] = [
     material: "آلومینیوم",
     thicknessMin: 2,
     thicknessMax: 2,
+    method: "فایبر",
+    rank: 1,
     laserType: "لیزر فایبر",
     powerMin: 780,
     powerMax: 1000,
     pulseTime: "میکرو ثانیه",
     equipment: "ARTIZONO",
     speed: 800,
+    accuracy: "±220 µm",
+    costLevel: 3,
+    speedScore: 85,
+    accuracyScore: 62,
+    qualityScore: 72,
+    recommendedFor: "سرعت بالا",
     focusZone: 2
-  },
-  {
-    process: "جوشکاری",
-    category: "فلزی",
-    material: "مس",
-    thicknessMin: 1,
-    thicknessMax: 1,
-    laserType: "لیزر فایبر",
-    powerMin: 650,
-    powerMax: 1000,
-    pulseTime: "میکرو ثانیه",
-    equipment: "ARTIZONO",
-    speed: 600,
-    focusZone: 0
-  },
-  {
-    process: "جوشکاری",
-    category: "فلزی",
-    material: "فولاد کم کربن",
-    thicknessMin: 1,
-    thicknessMax: 1,
-    laserType: "لیزر فایبر",
-    powerMin: 300,
-    powerMax: 500,
-    pulseTime: "میکرو ثانیه",
-    equipment: "ARTIZONO",
-    speed: 500,
-    focusZone: 0
   }
 ];

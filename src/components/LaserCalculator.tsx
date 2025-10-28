@@ -16,12 +16,14 @@ const LaserCalculator = () => {
     material: "",
     thickness: 0,
     process: "",
+    priority: "تعادل",
   });
 
   const [results, setResults] = useState<ReturnType<typeof calculateLaserParameters> | null>(null);
   const [showResults, setShowResults] = useState(false);
 
   const processes = ["برش", "حکاکی", "جوشکاری"];
+  const priorities = ["سرعت بالا", "دقت بالا", "کیفیت بالا", "هزینه کم", "تعادل"];
   
   const materials = Array.from(
     new Set(materialsDatabase.map((m) => m.material))
@@ -37,7 +39,8 @@ const LaserCalculator = () => {
     return (
       inputs.material &&
       inputs.thickness > 0 &&
-      inputs.process
+      inputs.process &&
+      inputs.priority
     );
   };
 
@@ -57,7 +60,7 @@ const LaserCalculator = () => {
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="space-y-2">
               <Label htmlFor="material" className="text-base font-medium">نوع ماده</Label>
               <Select
@@ -102,6 +105,25 @@ const LaserCalculator = () => {
                   {processes.map((process) => (
                     <SelectItem key={process} value={process}>
                       {process}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="priority" className="text-base font-medium">اولویت کاربر</Label>
+              <Select
+                value={inputs.priority}
+                onValueChange={(value) => setInputs({ ...inputs, priority: value })}
+              >
+                <SelectTrigger id="priority" className="border-primary/20 focus:border-primary transition-colors">
+                  <SelectValue placeholder="انتخاب اولویت" />
+                </SelectTrigger>
+                <SelectContent>
+                  {priorities.map((priority) => (
+                    <SelectItem key={priority} value={priority}>
+                      {priority}
                     </SelectItem>
                   ))}
                 </SelectContent>
